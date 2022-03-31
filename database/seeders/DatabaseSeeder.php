@@ -26,11 +26,13 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('12345678'),
         ]);
 
-        //Seeder Item
-        $this->call(ItemSeeder::class);
         //Seeder Customer
         $this->call(CustomerSeeder::class);
         //Seeder Invoice
         $this->call(InvoiceSeeder::class);
+        //Seeder Item
+        $this->call(ItemSeeder::class);
+        //Seeder InvoiceItem
+        $this->call(InvoiceItemSeeder::class);
     }
 }

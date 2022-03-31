@@ -18,7 +18,7 @@ class InvoiceFactory extends Factory
         return [
             'number' => $this->faker->unique()->numberBetween(1000000, 9999999),
             'date' => $this->faker->dateTimeBetween('-1 years', 'now'),
-            'customers_nit' => Customer::all()->random()->nit,
+            'customer_nit' => Customer::all()->random()->nit,
             'seller_nit' => User::all()->random()->nit,
             'total_without_iva' => $this->faker->randomFloat(2, 0, 100),
             'iva' => $this->faker->randomFloat(2, 0, 100),
