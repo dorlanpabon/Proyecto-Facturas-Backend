@@ -11,7 +11,7 @@ class InvoiceController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['show']]);
+        $this->middleware('auth:api',);
     }
 
     /**
@@ -93,6 +93,11 @@ class InvoiceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //delete invoice by id with invoiceItems
+        $invoice = Invoice::find($id);
+        $invoice->invoiceItems()->delete();
+        $invoice->delete();
+        //response with json
+        return response()->json(['message' => 'Invoice deleted successfully'], 200);
     }
 }
