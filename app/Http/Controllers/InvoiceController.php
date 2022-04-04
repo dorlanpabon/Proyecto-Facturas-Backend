@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -45,7 +46,39 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $invoice = new Invoice();
+
+        //request date now
+        $invoice->date = date('Y-m-d H:i:s');
+        //seller 
+        $invoice->seller_nit = auth()->user()->nit;
+        $invoice->number = Invoice::latest()->first()->number + 1;
+        //customer
+        $invoice->customer_nit = $request->customer_nit;
+        $invoice->total_with_iva = $request->total_with_iva;
+        $invoice->total_without_iva = $request->total_without_iva;
+        $invoice->iva = $request->iva;
+
+        //Store a new invoice
+        $invoice->save();
+
+        //save invoice items
+        $arrayInvoiceItems = [];
+        foreach ($request->invoice_items as $item) {
+            $invoiceItem = new InvoiceItem();
+            $invoiceItem->invoice_number = $invoice->number;
+            $invoiceItem->description = $item['description'];
+            $invoiceItem->quantity = $item['quantity'];
+            $invoiceItem->item_id = $item['item_id'];
+            $invoiceItem->price = $item['price'];
+            $invoiceItem->total = $item['total'];
+            $arrayInvoiceItems[] = $invoiceItem;
+        }
+        //save invoice items
+        $invoice->invoiceItems()->saveMany($arrayInvoiceItems);
+
+        //response with json
+        return response()->json($invoice);
     }
 
     /**
@@ -82,7 +115,28 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //update invoice
+        $invoice = Invoice::find($id);
+        $invoice->update($request->all());
+        //delete all invoice items
+        $invoice->invoiceItems()->delete();
+        //add new invoice items
+        $arrayInvoiceItems = [];
+        foreach ($request->invoice_items as $invoiceItem) {
+            $invoiceNew = new InvoiceItem();
+            $invoiceNew->invoice_number = $invoice->invoice_number;
+            $invoiceNew->description = $invoiceItem['description'];
+            $invoiceNew->quantity = $invoiceItem['quantity'];
+            $invoiceNew->item_id = $invoiceItem['item_id'];
+            $invoiceNew->price = $invoiceItem['price'];
+            $invoiceNew->total = $invoiceItem['total'];
+            $arrayInvoiceItems[] = $invoiceNew;
+        }
+        $invoice->invoiceItems()->saveMany($arrayInvoiceItems);
+
+        $invoice = Invoice::with('customer')->with('seller')->with('invoiceItems')->find($id);
+        //response with json
+        return response()->json($invoice);
     }
 
     /**

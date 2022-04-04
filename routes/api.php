@@ -58,11 +58,11 @@ Route::post('/customers', [CustomerController::class, 'store']);
 Route::put('/customers/{id}', [CustomerController::class, 'update']);
 Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
 
-Route::get('/item', [ItemController::class, 'index']);
-Route::get('/item/{id}', [ItemController::class, 'show']);
-Route::post('/item', [ItemController::class, 'store']);
-Route::put('/item/{id}', [ItemController::class, 'update']);
-Route::delete('/item/{id}', [ItemController::class, 'destroy']);
+Route::get('/items', [ItemController::class, 'index']);
+Route::get('/items/{id}', [ItemController::class, 'show']);
+Route::post('/items', [ItemController::class, 'store']);
+Route::put('/items/{id}', [ItemController::class, 'update']);
+Route::delete('/items/{id}', [ItemController::class, 'destroy']);
 
 Route::get('/invoices/{invoice_id}/items', [InvoiceItemController::class, 'index']);
 Route::get('/invoices/{invoice_id}/items/{id}', [InvoiceItemController::class, 'show']);
